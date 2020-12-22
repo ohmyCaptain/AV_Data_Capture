@@ -66,10 +66,17 @@ def getYear(getRelease):
         result = ''
     return result
 def getRelease(a):
-    html = etree.fromstring(a, etree.HTMLParser())  # //table/tr[1]/td[1]/text()
-    result1 = str(html.xpath('//strong[contains(text(),"時間")]/../span/text()')).strip(" ['']")
-    result2 = str(html.xpath('//strong[contains(text(),"時間")]/../span/a/text()')).strip(" ['']")
-    return str(result1 + result2).strip('+')
+#     html = etree.fromstring(a, etree.HTMLParser())  # //table/tr[1]/td[1]/text()
+#     result1 = str(html.xpath('//strong[contains(text(),"時間")]/../span/text()')).strip(" ['']")
+#     result2 = str(html.xpath('//strong[contains(text(),"時間")]/../span/a/text()')).strip(" ['']")
+#     return str(result1 + result2).strip('+')
+    patherr = re.compile(r'<strong>日期\:</strong>\s*?.*?<span class="value">(.*?)</span>')
+    dates = patherr.findall(a)
+    if dates:
+        result = dates[0]
+    else:
+        result = ''
+    return result
 def getTag(a):
     html = etree.fromstring(a, etree.HTMLParser())  # //table/tr[1]/td[1]/text()
     try:
@@ -103,10 +110,17 @@ def getCover_small(a, index=0):
             result = 'https:' + result
         return result
     except: # 2020.7.17 Repair Cover Url crawl
-        result = html.xpath("//div[@class='item-image fix-scale-cover']/img/@data-src")[index]
-        if not 'https' in result:
-            result = 'https:' + result
-        return result
+        try:
+            result = html.xpath("//div[@class='item-image fix-scale-cover']/img/@data-src")[index]
+            if not 'https' in result:
+                result = 'https:' + result
+            return result
+        except:
+            result = html.xpath("//div[@class='item-image']/img/@data-src")[index]
+            if not 'https' in result:
+                result = 'https:' + result
+            return result
+
 def getCover(htmlcode):
     html = etree.fromstring(htmlcode, etree.HTMLParser())
     try:
@@ -141,14 +155,23 @@ def main(number):
         # and the first elememt maybe not the one we are looking for
         # iterate all candidates and find the match one
         urls = html.xpath('//*[@id="videos"]/div/div/a/@href')
-        ids =html.xpath('//*[@id="videos"]/div/div/a/div[contains(@class, "uid")]/text()')
-        correct_url = urls[ids.index(number)]
+        # 记录一下欧美的ids  ['Blacked','Blacked']
+        if re.search(r'[a-zA-Z]+\.\d{2}\.\d{2}\.\d{2}', number):
+            correct_url = urls[0]
+        else:
+            ids =html.xpath('//*[@id="videos"]/div/div/a/div[contains(@class, "uid")]/text()')
+            correct_url = urls[ids.index(number)]
+       
         detail_page = get_html('https://javdb.com' + correct_url)
 
         # no cut image by default
         imagecut = 3
         # If gray image exists ,then replace with normal cover
-        cover_small = getCover_small(query_result, index=ids.index(number))
+        if re.search(r'[a-zA-Z]+\.\d{2}\.\d{2}\.\d{2}', number):
+            cover_small = getCover_small(query_result)
+        else:
+            cover_small = getCover_small(query_result, index=ids.index(number))
+        
         if 'placeholder' in cover_small:
             # replace wit normal cover and cut it
             imagecut = 1
