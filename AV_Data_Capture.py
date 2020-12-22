@@ -5,6 +5,8 @@ import sys
 from number_parser import get_number
 from core import *
 
+work_folder = "C:\\Users\\fm117\\Videos\\test" #dev 全局变量？
+
 def check_update(local_version):
     data = json.loads(get_html("https://api.github.com/repos/yoshiko2/AV_Data_Capture/releases/latest"))
 
@@ -86,15 +88,15 @@ def create_data_and_move(file_path: str, c: config.Config,debug):
             if c.failed_move() == False:
                 if c.soft_link():
                     print("[-]Link {} to failed folder".format(file_path))
-                    os.symlink(file_path, str(os.getcwd()) + "/" + conf.failed_folder() + "/")
+                    os.symlink(file_path, str(work_folder) + "/" + conf.failed_folder() + "/")
             elif c.failed_move() == True:
                 if c.soft_link():
                     print("[-]Link {} to failed folder".format(file_path))
-                    os.symlink(file_path, str(os.getcwd()) + "/" + conf.failed_folder() + "/")
+                    os.symlink(file_path, str(work_folder) + "/" + conf.failed_folder() + "/")
                 else:
                     try:
                         print("[-]Move [{}] to failed folder".format(file_path))
-                        shutil.move(file_path, str(os.getcwd()) + "/" + conf.failed_folder() + "/")
+                        shutil.move(file_path, str(work_folder) + "/" + conf.failed_folder() + "/")
                     except Exception as err:
                         print('[!]', err)
 
@@ -109,11 +111,11 @@ def create_data_and_move_with_custom_number(file_path: str, c: config.Config, cu
 
         if c.soft_link():
             print("[-]Link {} to failed folder".format(file_path))
-            os.symlink(file_path, str(os.getcwd()) + "/" + conf.failed_folder() + "/")
+            os.symlink(file_path, str(work_folder) + "/" + conf.failed_folder() + "/")
         else:
             try:
                 print("[-]Move [{}] to failed folder".format(file_path))
-                shutil.move(file_path, str(os.getcwd()) + "/" + conf.failed_folder() + "/")
+                shutil.move(file_path, str(work_folder) + "/" + conf.failed_folder() + "/")
             except Exception as err:
                 print('[!]', err)
 
@@ -136,7 +138,7 @@ if __name__ == '__main__':
         check_update(version)
 
     create_failed_folder(conf.failed_folder())
-    os.chdir(os.getcwd())
+    os.chdir(work_folder)
 
     # ========== Single File ==========
     if not single_file_path == '':
@@ -149,7 +151,7 @@ if __name__ == '__main__':
         sys.exit(0)
     # ========== Single File ==========
 
-    movie_list = movie_lists(".", re.split("[,，]", conf.escape_folder()))
+    movie_list = movie_lists(".", re.split("[,，]", conf.escape_folder()))   #dev todo 增加for循环 movie_lists(i,) i为各个work_folder
 
     count = 0
     count_all = str(len(movie_list))

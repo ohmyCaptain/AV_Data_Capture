@@ -30,7 +30,7 @@ def escape_path(path, escape_literals: str):  # Remove escape literals
 
 def moveFailedFolder(filepath, failed_folder):
     print('[-]Move to Failed output folder')
-    shutil.move(filepath, str(os.getcwd()) + '/' + failed_folder + '/')
+    shutil.move(filepath, str(work_folder) + '/' + failed_folder + '/')
     return 
 
 
@@ -438,14 +438,14 @@ def paste_file_to_folder(filepath, path, number, c_word, conf: config.Config):  
             os.symlink(filepath, path + '/' + number + c_word + houzhui)
         else:
             os.rename(filepath, path + '/' + number + c_word + houzhui)
-        if os.path.exists(os.getcwd() + '/' + number + c_word + '.srt'):  # 字幕移动
-            os.rename(os.getcwd() + '/' + number + c_word + '.srt', path + '/' + number + c_word + '.srt')
+        if os.path.exists(work_folder + '/' + number + c_word + '.srt'):  # 字幕移动
+            os.rename(work_folder + '/' + number + c_word + '.srt', path + '/' + number + c_word + '.srt')
             print('[+]Sub moved!')
-        elif os.path.exists(os.getcwd() + '/' + number + c_word + '.ssa'):
-            os.rename(os.getcwd() + '/' + number + c_word + '.ssa', path + '/' + number + c_word + '.ssa')
+        elif os.path.exists(work_folder + '/' + number + c_word + '.ssa'):
+            os.rename(work_folder + '/' + number + c_word + '.ssa', path + '/' + number + c_word + '.ssa')
             print('[+]Sub moved!')
-        elif os.path.exists(os.getcwd() + '/' + number + c_word + '.sub'):
-            os.rename(os.getcwd() + '/' + number + c_word + '.sub', path + '/' + number + c_word + '.sub')
+        elif os.path.exists(work_folder + '/' + number + c_word + '.sub'):
+            os.rename(work_folder + '/' + number + c_word + '.sub', path + '/' + number + c_word + '.sub')
             print('[+]Sub moved!')
     except FileExistsError:
         print('[-]File Exists! Please check your movie!')
