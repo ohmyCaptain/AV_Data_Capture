@@ -5,10 +5,10 @@ import os
 import config
 
 
+SUPPORT_PROXY_TYPE = ("http", "socks5", "socks5h", "socks")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+config_ini = os.path.join(BASE_DIR, 'config.ini')
 
-SUPPORT_PROXY_TYPE = ("http", "socks5", "socks5h","socks")
-BASE_DIR =  os.path.dirname(os.path.abspath(__file__))
-config_ini = os.path.join(BASE_DIR ,'config.ini')
 
 def get_data_state(data: dict) -> bool:  # 元数据获取失败检测
     if "title" not in data or "number" not in data:
@@ -23,7 +23,7 @@ def get_data_state(data: dict) -> bool:  # 元数据获取失败检测
     return True
 
 
-def getXpathSingle(htmlcode,xpath):
+def getXpathSingle(htmlcode, xpath):
     html = etree.fromstring(htmlcode, etree.HTMLParser())
     result1 = str(html.xpath(xpath)).strip(" ['']")
     return result1
@@ -35,7 +35,8 @@ def get_proxy(proxy: str, proxytype: str = None) -> dict:
     '''
     if proxy:
         if proxytype in SUPPORT_PROXY_TYPE:
-            proxies = {"http": proxytype + "://" + proxy, "https": proxytype + "://" + proxy}
+            proxies = {"http": proxytype + "://" + proxy,
+                       "https": proxytype + "://" + proxy}
         else:
             proxies = {"http": "http://" + proxy, "https": "https://" + proxy}
     else:
@@ -47,31 +48,35 @@ def get_proxy(proxy: str, proxytype: str = None) -> dict:
 # 网页请求核心
 def get_html(url, cookies: dict = None, ua: str = None, return_type: str = None):
     try:
-        
-        switch, proxy, timeout, retry_count, proxytype = config.Config(config_ini).proxy()
+
+        switch, proxy, timeout, retry_count, proxytype = config.Config(
+            config_ini).proxy()
         print(switch)
     except Exception as e:
         print('adc get_html err is ', e)
 
     proxies = get_proxy(proxy, proxytype)
-    print('proxy is: ',proxies)  #dev debug 代理格式有问题{'http': 'http://127.0.0.1:1080', 'https': 'https://127.0.0.1:1080'}
+    # dev debug 代理格式有问题{'http': 'http://127.0.0.1:1080', 'https': 'https://127.0.0.1:1080'}
+    print('proxy is: ', proxies)
 
     if ua is None:
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3100.0 Safari/537.36"} # noqa
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3100.0 Safari/537.36"}  # noqa
     else:
         headers = {"User-Agent": ua}
 
     for i in range(retry_count):
         try:
             if switch == '1' or switch == 1:
-                result = requests.get(str(url), headers=headers, timeout=timeout, proxies=proxies, cookies=cookies)
+                result = requests.get(
+                    str(url), headers=headers, timeout=timeout, proxies=proxies, cookies=cookies)
             else:
-                result = requests.get(str(url), headers=headers, timeout=timeout, cookies=cookies)
+                result = requests.get(
+                    str(url), headers=headers, timeout=timeout, cookies=cookies)
 
             result.encoding = "utf-8"
 
-            if return_type == "object":     
-                print(result) 
+            if return_type == "object":
+                print(result)
                 return result
             else:
                 return result.text
@@ -83,7 +88,8 @@ def get_html(url, cookies: dict = None, ua: str = None, return_type: str = None)
 
 
 def post_html(url: str, query: dict) -> requests.Response:
-    switch, proxy, timeout, retry_count, proxytype = config.Config(config_ini).proxy()
+    switch, proxy, timeout, retry_count, proxytype = config.Config(
+        config_ini).proxy()
     proxies = get_proxy(proxy, proxytype)
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3100.0 Safari/537.36"}
@@ -91,9 +97,11 @@ def post_html(url: str, query: dict) -> requests.Response:
     for i in range(retry_count):
         try:
             if switch == 1 or switch == '1':
-                result = requests.post(url, data=query, proxies=proxies,headers=headers, timeout=timeout)
+                result = requests.post(
+                    url, data=query, proxies=proxies, headers=headers, timeout=timeout)
             else:
-                result = requests.post(url, data=query, headers=headers, timeout=timeout)
+                result = requests.post(
+                    url, data=query, headers=headers, timeout=timeout)
             return result
         except requests.exceptions.ProxyError:
             print("[-]Connect retry {}/{}".format(i+1, retry_count))
@@ -102,7 +110,8 @@ def post_html(url: str, query: dict) -> requests.Response:
 
 def get_javlib_cookie() -> [dict, str]:
     import cloudscraper
-    switch, proxy, timeout, retry_count, proxytype = config.Config(config_ini).proxy()
+    switch, proxy, timeout, retry_count, proxytype = config.Config(
+        config_ini).proxy()
     proxies = get_proxy(proxy, proxytype)
 
     raw_cookie = {}
@@ -126,6 +135,7 @@ def get_javlib_cookie() -> [dict, str]:
             print("[-] IUAMError, retry {}/{}".format(i+1, retry_count))
 
     return raw_cookie, user_agent
+
 
 def translateTag_to_sc(tag):
     tranlate_to_sc = config.Config(config_ini).transalte_to_sc()
@@ -289,7 +299,7 @@ def translateTag_to_sc(tag):
                     'チアガール': '啦啦队女孩', 'ママ友': '妈妈的朋友', 'エマニエル': '片商Emanieru熟女塾', '妄想族': '妄想族', '蝋燭': '蜡烛', '鼻フック': '鼻钩儿',
                     '放置': '放置', 'サンプル動画': '范例影片', 'サイコ・スリラー': '心理惊悚片', 'ラブコメ': '爱情喜剧', 'オタク': '御宅族',
 
-                    ## JAVDB
+                    # JAVDB
 
                     '可播放': '可播放', '可下載': '可下载', '含字幕': '含字幕', '單體影片': '单体影片', '含預覽圖': '含预览图',
                     '含預覽視頻': '含预览视频', '2020': '2020', '2019': '2019', '2018': '2018', '2017':
@@ -453,7 +463,7 @@ def translateTag_to_sc(tag):
                     'レオタード': '花边皇后', 'レズ': '紧身衣', 'ローション・オイル': '女士', '露出': '化妆油',
 
 
-                    #fc2
+                    # fc2
                     '素人': '素人', '美女': '美人', '拍鸽子': 'ハメ撮り', '恋物癖': 'フェチ', '巨乳': '巨乳', 'COSPLAY':
                         'コスプレ・制服', '自拍': '自分撮り', '其他': 'その他', 'OL姐姐': 'OL・お姉さん', '同性恋': 'ゲイ', '3P・乱交':
                         '３P・乱交', '野外露出': '野外・露出', '国外': '海外', 'SM': 'SM', '女士': 'レズ', '动画': 'アニメ', 'BL':
@@ -461,7 +471,7 @@ def translateTag_to_sc(tag):
                         '個人撮影', '不修改': '無修正', '角色扮演': 'コスプレ', '内衣': '下着', '美乳': '美乳', '游泳衣': '水着', '流出':
                         '流出', '制服': '制服', '小册子': 'パンチラ', '口交': 'フェラ', '模型': 'モデル', '中出': '中出し', '可爱':
                         '可愛い', '人妻': '人妻', '美少女': '美少女', '原始': 'オリジナル', '贫奶': '貧乳', '自慰': 'オナニー', '菠萝':
-                        'パイパン','ロリ':'萝莉','生ハメ':'第一人称',
+                        'パイパン', 'ロリ': '萝莉', '生ハメ': '第一人称',
                     }
         try:
             return dict_gen[tag]
@@ -470,9 +480,11 @@ def translateTag_to_sc(tag):
     else:
         return tag
 
-def translate(src:str,target_language:str="zh_cn"):
-    url = "https://translate.google.cn/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=auto&tl=" + target_language + "&q=" + src
-    result = get_html(url=url,return_type="object")
+
+def translate(src: str, target_language: str = "zh_cn"):
+    url = "https://translate.google.cn/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=auto&tl=" + \
+        target_language + "&q=" + src
+    result = get_html(url=url, return_type="object")
 
     translate_list = [i["trans"] for i in result.json()["sentences"]]
 
