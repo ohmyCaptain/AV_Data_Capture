@@ -20,6 +20,8 @@ from WebCrawler import xcity
 from WebCrawler import javlib
 from WebCrawler import dlsite
 
+work_folder = "C:/Users/fm117/Videos/test"   #dev todo 想办法放入 av_data_capture.py 中
+config_ini = 'C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture/config.ini'
 
 def escape_path(path, escape_literals: str):  # Remove escape literals
     backslash = '\\'
@@ -97,6 +99,7 @@ def get_data_from_json(file_number, filepath, conf: config.Config):  # 从JSON�
             if conf.debug() == True:
                 print('[+]select',source)
             json_data = json.loads(func_mapping[source](file_number))
+            print('json_data',json_data) # dev debug
             # if any service return a valid return, break
             if get_data_state(json_data):
                 break
@@ -281,7 +284,7 @@ def trimblank(s: str):
 
 # path = examle:photo , video.in the Project Folder!
 def download_file_with_filename(url, filename, path, conf: config.Config, filepath, failed_folder):
-    switch, proxy, timeout, retry_count, proxytype = config.Config().proxy()
+    switch, proxy, timeout, retry_count, proxytype = config.Config(config_ini).proxy()
 
     for i in range(retry_count):
         try:

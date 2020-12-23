@@ -5,9 +5,11 @@ import sys
 from number_parser import get_number
 from core import *
 
-work_folder = "C:\\Users\\fm117\\Videos\\test" #dev 全局变量？
+work_folder = "C:/Users/fm117/Videos/test" #dev 全局变量？   本程序全用反斜杠/
 
 def check_update(local_version):
+    return   #dev 跳过更新
+
     data = json.loads(get_html("https://api.github.com/repos/yoshiko2/AV_Data_Capture/releases/latest"))
 
     remote = data["tag_name"]
@@ -122,12 +124,13 @@ def create_data_and_move_with_custom_number(file_path: str, c: config.Config, cu
 
 if __name__ == '__main__':
     version = '4.2.1'
-
+    
     # Parse command line args
     single_file_path, config_file, custom_number, auto_exit = argparse_function(version)
-
+    
+    config_ini = 'C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture/config.ini'
     # Read config.ini
-    conf = config.Config(path=config_file)
+    conf = config.Config(path=config_ini)
 
     version_print = 'Version ' + version
     print('[*]================== AV Data Capture ===================')

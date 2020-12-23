@@ -2,16 +2,19 @@ import os
 import configparser
 import codecs
 
+# bug path变量确定
 
 class Config:
     def __init__(self, path: str = "config.ini"):
-        if os.path.exists(path):
+        if os.path.exists(path):        #dev debug path 写绝对路径
+            print('config.ini exists')
             self.conf = configparser.ConfigParser()
             try:
                 self.conf.read(path, encoding="utf-8-sig")
             except:
                 self.conf.read(path, encoding="utf-8")
         else:
+            print('config.ini is not exists')
             try:
                 self.conf = configparser.ConfigParser()
                 try: # From single crawler debug use only
@@ -47,11 +50,11 @@ class Config:
         return self.conf.getboolean("transalte", "switch")
     def transalte_values(self) -> bool:
         return self.conf.get("transalte", "values")
-    def proxy(self) -> [str, int, int, str]:
+    def proxy(self) -> [int,str, int, int, str]:
         try:
             sec = "proxy"
             switch = self.conf.get(sec, "switch")
-            proxy = self.conf.get(sec, "proxy")
+            proxy = self.conf.get(sec, "proxy")   # todo bug
             timeout = self.conf.getint(sec, "timeout")
             retry = self.conf.getint(sec, "retry")
             proxytype = self.conf.get(sec, "type")

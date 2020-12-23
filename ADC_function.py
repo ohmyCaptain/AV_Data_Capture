@@ -3,7 +3,10 @@ from lxml import etree
 
 import config
 
-SUPPORT_PROXY_TYPE = ("http", "socks5", "socks5h")
+
+
+SUPPORT_PROXY_TYPE = ("http", "socks5", "socks5h","socks")
+config_ini = 'C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture/config.ini'
 
 def get_data_state(data: dict) -> bool:  # 元数据获取失败检测
     if "title" not in data or "number" not in data:
@@ -25,7 +28,8 @@ def getXpathSingle(htmlcode,xpath):
 
 
 def get_proxy(proxy: str, proxytype: str = None) -> dict:
-    ''' 获得代理参数，默认http代理
+    ''' 获得代理参数，默认http代理 dev debug 代理格式有问题 {'http': 'http://127.0.0.1:1080', 'https': 'https://127.0.0.1:1080'}
+
     '''
     if proxy:
         if proxytype in SUPPORT_PROXY_TYPE:
@@ -40,8 +44,15 @@ def get_proxy(proxy: str, proxytype: str = None) -> dict:
 
 # 网页请求核心
 def get_html(url, cookies: dict = None, ua: str = None, return_type: str = None):
-    switch, proxy, timeout, retry_count, proxytype = config.Config().proxy()
+    try:
+        
+        switch, proxy, timeout, retry_count, proxytype = config.Config(config_ini).proxy()
+        print(switch)
+    except Exception as e:
+        print('adc get_html err is ', e)
+
     proxies = get_proxy(proxy, proxytype)
+    print('proxy is: ',proxies)  #dev debug 代理格式有问题{'http': 'http://127.0.0.1:1080', 'https': 'https://127.0.0.1:1080'}
 
     if ua is None:
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3100.0 Safari/537.36"} # noqa
@@ -57,7 +68,8 @@ def get_html(url, cookies: dict = None, ua: str = None, return_type: str = None)
 
             result.encoding = "utf-8"
 
-            if return_type == "object":
+            if return_type == "object":     
+                print(result) 
                 return result
             else:
                 return result.text
@@ -69,7 +81,7 @@ def get_html(url, cookies: dict = None, ua: str = None, return_type: str = None)
 
 
 def post_html(url: str, query: dict) -> requests.Response:
-    switch, proxy, timeout, retry_count, proxytype = config.Config().proxy()
+    switch, proxy, timeout, retry_count, proxytype = config.Config(config_ini).proxy()
     proxies = get_proxy(proxy, proxytype)
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3100.0 Safari/537.36"}
@@ -88,7 +100,7 @@ def post_html(url: str, query: dict) -> requests.Response:
 
 def get_javlib_cookie() -> [dict, str]:
     import cloudscraper
-    switch, proxy, timeout, retry_count, proxytype = config.Config().proxy()
+    switch, proxy, timeout, retry_count, proxytype = config.Config(config_ini).proxy()
     proxies = get_proxy(proxy, proxytype)
 
     raw_cookie = {}
@@ -114,7 +126,7 @@ def get_javlib_cookie() -> [dict, str]:
     return raw_cookie, user_agent
 
 def translateTag_to_sc(tag):
-    tranlate_to_sc = config.Config().transalte_to_sc()
+    tranlate_to_sc = config.Config(config_ini).transalte_to_sc()
     if tranlate_to_sc:
         dict_gen = {'中文字幕': '中文字幕',
                     '高清': 'XXXX', '字幕': 'XXXX', '推薦作品': '推荐作品', '通姦': '通奸', '淋浴': '淋浴', '舌頭': '舌头',

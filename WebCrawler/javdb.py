@@ -1,5 +1,6 @@
 import sys
-sys.path.append('../')
+sys.path.append('C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture')  #dev ../ 不管用
+work_folder = "C:/Users/fm117/Videos/test"
 import re
 from lxml import etree
 import json
@@ -144,12 +145,15 @@ def getSeries(a):
     result2 = str(html.xpath('//strong[contains(text(),"系列")]/../span/a/text()')).strip(" ['']")
     return str(result1 + result2).strip('+').replace("', '", '').replace('"', '')
 def main(number):
+    print("javdb")
     try:
         number = number.upper()
         try:
-            query_result = get_html('https://javdb.com/search?q=' + number + '&f=all')
-        except:
+            query_result = get_html('https://javdb5.com/search?q=' + number + '&f=all')
+        except Exception as e:
+            print('javdb.py main err is ',e)
             query_result = get_html('https://javdb4.com/search?q=' + number + '&f=all')
+
         html = etree.fromstring(query_result, etree.HTMLParser())  # //table/tr[1]/td[1]/text()
         # javdb sometime returns multiple results,
         # and the first elememt maybe not the one we are looking for
@@ -162,8 +166,7 @@ def main(number):
             ids =html.xpath('//*[@id="videos"]/div/div/a/div[contains(@class, "uid")]/text()')
             correct_url = urls[ids.index(number)]
        
-        detail_page = get_html('https://javdb.com' + correct_url)
-
+        detail_page = get_html('https://javdb5.com' + correct_url)
         # no cut image by default
         imagecut = 3
         # If gray image exists ,then replace with normal cover
@@ -199,8 +202,8 @@ def main(number):
             'label': getLabel(detail_page),
             'year': getYear(getRelease(detail_page)),  # str(re.search('\d{4}',getRelease(a)).group()),
             'actor_photo': getActorPhoto(getActor(detail_page)),
-            'website': 'https://javdb.com' + correct_url,
-            'source': 'javdb.py',
+            'website': 'https://javdb5.com' + correct_url,
+            'source': 'javdb5.py',
             'series': getSeries(detail_page),
         }
     except Exception as e:
@@ -212,4 +215,4 @@ def main(number):
 # main('DV-1562')
 # input("[+][+]Press enter key exit, you can check the error messge before you exit.\n[+][+]按回车键结束，你可以在结束之前查看和错误信息。")
 if __name__ == "__main__":
-    print(main('ipx-292'))
+    print(main('tre-149'))

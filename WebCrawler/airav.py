@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../')
+sys.path.append('C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture')
 import re
 from pyquery import PyQuery as pq#need install
 from lxml import etree#need install
@@ -111,6 +111,7 @@ def getTag(htmlcode):  # 获取标签
     return tag
 
 def main(number):
+    print('airav')
     try:
         try:
             try:
