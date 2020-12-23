@@ -5,7 +5,7 @@ import sys
 from number_parser import get_number
 from core import *
 
-work_folder = "C:/Users/fm117/Videos/test" #dev 全局变量？   本程序全用反斜杠/
+
 
 def check_update(local_version):
     return   #dev 跳过更新
@@ -69,18 +69,18 @@ def CEF(path):
         a = ''
 
 
-def create_data_and_move(file_path: str, c: config.Config,debug):
+def create_data_and_move(file_path: str, c: config.Config,debug,work_folder):
     # Normalized number, eg: 111xxx-222.mp4 -> xxx-222.mp4
     n_number = get_number(debug,file_path)
 
     if debug == True:
         print("[!]Making Data for [{}], the number is [{}]".format(file_path, n_number))
-        core_main(file_path, n_number, c)
+        core_main(file_path, n_number, c,work_folder)
         print("[*]======================================================")
     else:
         try:
             print("[!]Making Data for [{}], the number is [{}]".format(file_path, n_number))
-            core_main(file_path, n_number, c)
+            core_main(file_path, n_number, c,work_folder)
             print("[*]======================================================")
         except Exception as err:
             print("[-] [{}] ERROR:".format(file_path))
@@ -122,13 +122,16 @@ def create_data_and_move_with_custom_number(file_path: str, c: config.Config, cu
                 print('[!]', err)
 
 
-if __name__ == '__main__':
-    version = '4.2.1'
+
     
+def main(work_folder):   
+    work_folder = work_folder
+    version = '4.2.1'
     # Parse command line args
     single_file_path, config_file, custom_number, auto_exit = argparse_function(version)
     
-    config_ini = 'C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture/config.ini'
+    BASE_DIR =  os.path.dirname(os.path.abspath(__file__))
+    config_ini = os.path.join(BASE_DIR ,'config.ini')
     # Read config.ini
     conf = config.Config(path=config_ini)
 
@@ -138,7 +141,8 @@ if __name__ == '__main__':
     print('[*]======================================================')
 
     if conf.update_check():
-        check_update(version)
+        pass        #禁止更新
+        #check_update(version)
 
     create_failed_folder(conf.failed_folder())
     os.chdir(work_folder)
@@ -154,6 +158,7 @@ if __name__ == '__main__':
         sys.exit(0)
     # ========== Single File ==========
 
+    #dev todo 加for 大循环
     movie_list = movie_lists(".", re.split("[,，]", conf.escape_folder()))   #dev todo 增加for循环 movie_lists(i,) i为各个work_folder
 
     count = 0
@@ -167,14 +172,15 @@ if __name__ == '__main__':
         count = count + 1
         percentage = str(count / int(count_all) * 100)[:4] + '%'
         print('[!] - ' + percentage + ' [' + str(count) + '/' + count_all + '] -')
-        create_data_and_move(movie_path, conf, conf.debug())
+        create_data_and_move(movie_path, conf, conf.debug(),work_folder)         #dev todo 此main 加work_folders 大循环
 
     CEF(conf.success_folder())
     CEF(conf.failed_folder())
     print("[+]All finished!!!")
-    if conf.auto_exit():
-        sys.exit(0)
-    if auto_exit:
-        sys.exit(0)
+
+
+if __name__ == '__main__':   #外包循环 main（）
+    main('./')
+    print('main')
     input("Press enter key exit, you can check the error message before you exit...")
     sys.exit(0)

@@ -20,8 +20,9 @@ from WebCrawler import xcity
 from WebCrawler import javlib
 from WebCrawler import dlsite
 
-work_folder = "C:/Users/fm117/Videos/test"   #dev todo 想办法放入 av_data_capture.py 中
-config_ini = 'C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture/config.ini'
+#work_folder = "C:/Users/fm117/Videos/test"   #dev todo 想办法放入 av_data_capture.py 中
+BASE_DIR =  os.path.dirname(os.path.abspath(__file__))
+config_ini = os.path.join(BASE_DIR ,'config.ini')
 
 def escape_path(path, escape_literals: str):  # Remove escape literals
     backslash = '\\'
@@ -432,7 +433,7 @@ def cutImage(imagecut, path, number, c_word):
         print('[+]Image Copyed!     ' + path + '/' + number + c_word + '-poster.jpg')
 
 
-def paste_file_to_folder(filepath, path, number, c_word, conf: config.Config):  # 文件路径，番号，后缀，要移动至的位置
+def paste_file_to_folder(filepath, path, number, c_word, conf: config.Config,work_folder):  # 文件路径，番号，后缀，要移动至的位置
     houzhui = str(re.search('[.](iso|ISO|AVI|RMVB|WMV|MOV|MP4|MKV|FLV|TS|WEBM|avi|rmvb|wmv|mov|mp4|mkv|flv|ts|webm)$', filepath).group())
 
     try:
@@ -515,7 +516,7 @@ def debug_print(data: json):
         pass
 
 
-def core_main(file_path, number_th, conf: config.Config):
+def core_main(file_path, number_th, conf: config.Config,work_folder):
     # =======================================================================初始化所需变量
     multi_part = 0
     part = ''
@@ -581,7 +582,7 @@ def core_main(file_path, number_th, conf: config.Config):
         print_files(path, c_word,  json_data.get('naming_rule'), part, cn_sub, json_data, filepath, conf.failed_folder(), tag,  json_data.get('actor_list'), liuchu)
 
         # 移动文件
-        paste_file_to_folder(filepath, path, number, c_word, conf)
+        paste_file_to_folder(filepath, path, number, c_word, conf,work_folder)
     elif conf.main_mode() == 2:
         # 移动文件
         paste_file_to_folder_mode2(filepath, path, multi_part, number, part, c_word, conf)

@@ -1,12 +1,14 @@
 import requests
 from lxml import etree
+import os
 
 import config
 
 
 
 SUPPORT_PROXY_TYPE = ("http", "socks5", "socks5h","socks")
-config_ini = 'C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture/config.ini'
+BASE_DIR =  os.path.dirname(os.path.abspath(__file__))
+config_ini = os.path.join(BASE_DIR ,'config.ini')
 
 def get_data_state(data: dict) -> bool:  # 元数据获取失败检测
     if "title" not in data or "number" not in data:

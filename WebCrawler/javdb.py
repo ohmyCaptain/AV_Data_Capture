@@ -1,6 +1,5 @@
 import sys
 sys.path.append('C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture')  #dev ../ 不管用
-work_folder = "C:/Users/fm117/Videos/test"
 import re
 from lxml import etree
 import json
