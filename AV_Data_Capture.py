@@ -60,7 +60,8 @@ def create_failed_folder(failed_folder):
     if not os.path.exists(failed_folder + '/'):  # 新建failed文件夹
         try:
             os.makedirs(failed_folder + '/')
-        except:
+        except Exception as e:
+            print(e)
             print(
                 "[-]failed!can not be make folder 'failed'\n[-](Please run as Administrator)")
             sys.exit(0)
@@ -72,7 +73,8 @@ def CEF(path):
         for file in files:
             os.removedirs(path + '/' + file)  # 删除这个空文件夹
             print('[+]Deleting empty folder', path + '/' + file)
-    except:
+    except Exception as e:
+        print(e)
         a = ''
 
 

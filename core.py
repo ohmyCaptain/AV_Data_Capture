@@ -41,7 +41,8 @@ def CreatFailedFolder(failed_folder):
     if not os.path.exists(failed_folder + '/'):  # 新建failed文件夹
         try:
             os.makedirs(failed_folder + '/')
-        except:
+        except Exception as e:
+            print(e)
             print("[-]failed!can not be make Failed output folder\n[-](Please run as Administrator)")
             return 
 
@@ -104,7 +105,8 @@ def get_data_from_json(file_number, filepath, conf: config.Config):  # 从JSON�
             # if any service return a valid return, break
             if get_data_state(json_data):
                 break
-        except:
+        except Exception as e:
+            print(e)
             break
 
     # Return if data not found in all sources
@@ -264,7 +266,8 @@ def create_folder(success_folder, location_rule, json_data, conf: config.Config)
         path = escape_path(path, conf.escape_literals())
         try:
             os.makedirs(path)
-        except:
+        except Exception as e:
+            print(e)
             path = success_folder + '/' + location_rule.replace('/[' + number + ')-' + title, "/number")
             path = escape_path(path, conf.escape_literals())
 
@@ -377,7 +380,8 @@ def print_files(path, c_word, naming_rule, part, cn_sub, json_data, filepath, fa
                     print("  <actor>", file=code)
                     print("   <name>" + key + "</name>", file=code)
                     print("  </actor>", file=code)
-            except:
+            except Exception as e:
+                print(e)
                 aaaa = ''
             print("  <maker>" + studio + "</maker>", file=code)
             print("  <label>" + label + "</label>", file=code)
@@ -389,12 +393,14 @@ def print_files(path, c_word, naming_rule, part, cn_sub, json_data, filepath, fa
                 for i in tag:
                     print("  <tag>" + i + "</tag>", file=code)
                 print("  <tag>" + series + "</tag>", file=code)
-            except:
+            except Exception as e:
+                print(e)
                 aaaaa = ''
             try:
                 for i in tag:
                     print("  <genre>" + i + "</genre>", file=code)
-            except:
+            except Exception as e:
+                print(e)
                 aaaaaaaa = ''
             if cn_sub == '1':
                 print("  <genre>中文字幕</genre>", file=code)
@@ -426,7 +432,8 @@ def cutImage(imagecut, path, number, c_word):
             img2 = img.crop((w - h / 1.5, 0, w, h))
             img2.save(path + '/' + number + c_word + '-poster.jpg')
             print('[+]Image Cutted!     ' + path + '/' + number + c_word + '-poster.jpg')
-        except:
+        except Exception as e:
+            print(e)
             print('[-]Cover cut failed!')
     elif imagecut == 0: # 复制封面
         shutil.copyfile(path + '/' + number + c_word + '-fanart.jpg',path + '/' + number + c_word + '-poster.jpg')
@@ -494,7 +501,8 @@ def get_part(filepath, failed_folder):
             return re.findall('-CD\d+', filepath)[0]
         if re.search('-cd\d+', filepath):
             return re.findall('-cd\d+', filepath)[0]
-    except:
+    except Exception as e:
+        print(e)
         print("[-]failed!Please rename the filename again!")
         moveFailedFolder(filepath, failed_folder)
         return
@@ -512,7 +520,8 @@ def debug_print(data: json):
             print('[+]  -', "%-11s" % i, ':', v)
 
         print("[+] ---Debug info---")
-    except:
+    except Exception as e:
+        print(e)
         pass
 
 

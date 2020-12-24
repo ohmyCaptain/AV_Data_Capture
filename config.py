@@ -11,7 +11,8 @@ class Config:
             self.conf = configparser.ConfigParser()
             try:
                 self.conf.read(path, encoding="utf-8-sig")
-            except:
+            except Exception as e:
+            print(e)
                 self.conf.read(path, encoding="utf-8")
         else:
             print('config.ini is not exists')
@@ -19,7 +20,8 @@ class Config:
                 self.conf = configparser.ConfigParser()
                 try: # From single crawler debug use only
                     self.conf.read('../' + path, encoding="utf-8-sig")
-                except:
+                except Exception as e:
+                    print(e)
                     self.conf.read('../' + path, encoding="utf-8")
             except Exception as e:
                 print("[-]Config file not found! Use the default settings")
@@ -74,7 +76,8 @@ class Config:
         """
         try:
             return self.conf.getint("Name_Rule", "max_title_len")
-        except:
+        except Exception as e:
+            print(e)
             return 50
 
     def update_check(self) -> bool:

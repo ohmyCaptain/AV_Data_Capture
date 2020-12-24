@@ -475,7 +475,8 @@ def translateTag_to_sc(tag):
                     }
         try:
             return dict_gen[tag]
-        except:
+        except Exception as e:
+            print(e)
             return tag
     else:
         return tag

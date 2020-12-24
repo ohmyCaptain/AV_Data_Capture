@@ -111,7 +111,6 @@ def getTag(htmlcode):  # 获取标签
     return tag
 
 def main(number):
-    print('airav')
     try:
         try:
             try:
