@@ -12,7 +12,10 @@ folds = ['D:/a',
 
 for f in folds:
     print('begin: ', f)
-    AV_Data_Capture.main(f)
+    try:
+        AV_Data_Capture.main(f)
+    except:
+        print('Unable to connect ', f)
 
 
 input("Press enter key exit, you can check the error message before you exit...")
