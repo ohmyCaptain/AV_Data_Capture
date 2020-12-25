@@ -1,8 +1,14 @@
 import AV_Data_Capture
 import sys
 
-folds = ['C:/Users/fm117/Videos/test',
-         'C:/Users/fm117/Videos/test2']
+folds = ['D:/a',
+         'E:/a',
+         '//Thinkpad-t410/d',
+         '//Thinkpad-t410/e',
+         '//Thinkpad-t410/f',
+         '//Thinkpad-t410/j',
+         '//Thinkpad-t410/g',
+         ]
 
 for f in folds:
     print('begin: ', f)

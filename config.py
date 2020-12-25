@@ -7,12 +7,12 @@ import codecs
 class Config:
     def __init__(self, path: str = "config.ini"):
         if os.path.exists(path):        #dev debug path 写绝对路径
-            print('config.ini exists')
+            #print('config.ini exists')
             self.conf = configparser.ConfigParser()
             try:
                 self.conf.read(path, encoding="utf-8-sig")
             except Exception as e:
-            print(e)
+                print(e)
                 self.conf.read(path, encoding="utf-8")
         else:
             print('config.ini is not exists')
@@ -56,7 +56,7 @@ class Config:
         try:
             sec = "proxy"
             switch = self.conf.get(sec, "switch")
-            proxy = self.conf.get(sec, "proxy")   # todo bug
+            proxy = self.conf.get(sec, "proxy")  
             timeout = self.conf.getint(sec, "timeout")
             retry = self.conf.getint(sec, "retry")
             proxytype = self.conf.get(sec, "type")

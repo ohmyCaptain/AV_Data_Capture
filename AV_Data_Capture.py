@@ -1,7 +1,6 @@
 import argparse
 import os
 import sys
-
 from number_parser import get_number
 from core import *
 
@@ -40,19 +39,32 @@ def argparse_function(ver: str) -> [str, str, bool]:
 
 
 def movie_lists(root, escape_folder):
-    for folder in escape_folder:
-        if folder in root:
-            return []
-    total = []
+    print('root is ', root)
+
     file_type = ['.mp4', '.avi', '.rmvb', '.wmv', '.mov', '.mkv', '.flv', '.ts', '.webm',
                  '.MP4', '.AVI', '.RMVB', '.WMV', '.MOV', '.MKV', '.FLV', '.TS', '.WEBM', '.iso', '.ISO']
-    dirs = os.listdir(root)
-    for entry in dirs:
-        f = os.path.join(root, entry)
-        if os.path.isdir(f):
-            total += movie_lists(f, escape_folder)
-        elif os.path.splitext(f)[1] in file_type:
-            total.append(f)
+
+    total = []
+
+    # debug os.walk 在多目录环境下更适用
+    for r, dirs, files in os.walk(root):
+
+        def break_for():
+            for e in escape_folder:
+                if e in r:
+                    return True
+
+        bf = break_for()
+        if bf:
+            continue
+        else:
+            for f in files:
+                f_path = os.path.join(r, f)
+                if os.path.splitext(f)[1] in file_type:
+                    total.append(f_path)
+                else:
+                    pass
+    print('total files are: \n', total)
     return total
 
 
@@ -85,6 +97,7 @@ def create_data_and_move(file_path: str, c: config.Config, debug, work_folder):
     if debug == True:
         print("[!]Making Data for [{}], the number is [{}]".format(
             file_path, n_number))
+        # todo todo 更改文件名规则为 actor + num
         core_main(file_path, n_number, c, work_folder)
         print("[*]======================================================")
     else:
@@ -118,11 +131,11 @@ def create_data_and_move(file_path: str, c: config.Config, debug, work_folder):
                         print('[!]', err)
 
 
-def create_data_and_move_with_custom_number(file_path: str, c: config.Config, custom_number=None):
+def create_data_and_move_with_custom_number(file_path: str, c: config.Config, custom_number=None, work_folder='./'):
     try:
         print("[!]Making Data for [{}], the number is [{}]".format(
             file_path, custom_number))
-        core_main(file_path, custom_number, c)
+        core_main(file_path, custom_number, c, work_folder)
         print("[*]======================================================")
     except Exception as err:
         print("[-] [{}] ERROR:".format(file_path))
@@ -166,10 +179,10 @@ def main(work_folder):
     os.chdir(work_folder)
 
     # ========== Single File ==========
-    if not single_file_path == '':
+    if not single_file_path == '':  # single file 有问题
         print('[+]==================== Single File =====================')
         create_data_and_move_with_custom_number(
-            single_file_path, conf, custom_number)
+            single_file_path, conf, custom_number, work_folder)
         CEF(conf.success_folder())
         CEF(conf.failed_folder())
         print("[+]All finished!!!")
@@ -178,9 +191,8 @@ def main(work_folder):
         sys.exit(0)
     # ========== Single File ==========
 
-    # dev todo 加for 大循环
-    # dev todo 增加for循环 movie_lists(i,) i为各个work_folder
-    movie_list = movie_lists(".", re.split("[,，]", conf.escape_folder()))
+    movie_list = movie_lists(
+        work_folder, re.split("[,，]", conf.escape_folder()))
 
     count = 0
     count_all = str(len(movie_list))
@@ -194,7 +206,6 @@ def main(work_folder):
         percentage = str(count / int(count_all) * 100)[:4] + '%'
         print('[!] - ' + percentage +
               ' [' + str(count) + '/' + count_all + '] -')
-        # dev todo 此main 加work_folders 大循环
         create_data_and_move(movie_path, conf, conf.debug(), work_folder)
 
     CEF(conf.success_folder())
@@ -203,7 +214,7 @@ def main(work_folder):
 
 
 if __name__ == '__main__':  # 外包循环 main（）
-    main('./')
+    main('E:/a')
     print('main')
     input("Press enter key exit, you can check the error message before you exit...")
     sys.exit(0)

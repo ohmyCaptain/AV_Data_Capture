@@ -1,7 +1,6 @@
 import requests
 from lxml import etree
 import os
-
 import config
 
 
@@ -51,13 +50,13 @@ def get_html(url, cookies: dict = None, ua: str = None, return_type: str = None)
 
         switch, proxy, timeout, retry_count, proxytype = config.Config(
             config_ini).proxy()
-        print(switch)
+        # print(switch)
     except Exception as e:
         print('adc get_html err is ', e)
 
     proxies = get_proxy(proxy, proxytype)
     # dev debug 代理格式有问题{'http': 'http://127.0.0.1:1080', 'https': 'https://127.0.0.1:1080'}
-    print('proxy is: ', proxies)
+    print('[+]get_html: ', url, '   proxy is: ', proxies)
 
     if ua is None:
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3100.0 Safari/537.36"}  # noqa

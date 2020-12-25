@@ -1,5 +1,8 @@
 import sys
-sys.path.append('../')
+import os
+
+UP_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(UP_DIR)
 import json
 from bs4 import BeautifulSoup
 from lxml import html
@@ -155,4 +158,4 @@ def get_series(data: hash) -> str:
 
 
 if __name__ == "__main__":
-    print(main("soe-259"))
+    print(main("PRED-229"))

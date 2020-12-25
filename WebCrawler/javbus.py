@@ -1,5 +1,9 @@
 import sys
-sys.path.append('../')
+import os
+
+UP_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(UP_DIR)
+
 import re
 from pyquery import PyQuery as pq#need install
 from lxml import etree#need install

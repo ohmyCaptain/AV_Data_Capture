@@ -1,5 +1,9 @@
 import sys
-sys.path.append('C:/Users/fm117/OneDrive/GitHub/AV_Data_Capture')  #dev ../ 不管用
+import os
+
+UP_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(UP_DIR)
+
 import re
 from lxml import etree
 import json
@@ -214,4 +218,4 @@ def main(number):
 # main('DV-1562')
 # input("[+][+]Press enter key exit, you can check the error messge before you exit.\n[+][+]按回车键结束，你可以在结束之前查看和错误信息。")
 if __name__ == "__main__":
-    print(main('tre-149'))
+    print(main('PRED-229'))
