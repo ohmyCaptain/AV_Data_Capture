@@ -567,6 +567,7 @@ def debug_print(data: json):
 
 def core_main(file_path, number_th, conf: config.Config, work_folder):
     # =======================================================================初始化所需变量
+    work_folder = work_folder
     os.chdir(work_folder)
     multi_part = 0
     part = ''

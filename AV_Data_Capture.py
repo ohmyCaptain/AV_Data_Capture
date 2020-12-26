@@ -91,6 +91,8 @@ def CEF(path):
 
 
 def create_data_and_move(file_path: str, c: config.Config, debug, work_folder):
+    work_folder = work_folder
+    conf = c
     # Normalized number, eg: 111xxx-222.mp4 -> xxx-222.mp4
     n_number = get_number(debug, file_path)
 
@@ -132,6 +134,7 @@ def create_data_and_move(file_path: str, c: config.Config, debug, work_folder):
 
 
 def create_data_and_move_with_custom_number(file_path: str, c: config.Config, custom_number=None, work_folder='./'):
+    conf = c
     try:
         print("[!]Making Data for [{}], the number is [{}]".format(
             file_path, custom_number))
