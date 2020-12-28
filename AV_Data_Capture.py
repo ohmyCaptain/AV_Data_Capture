@@ -3,6 +3,7 @@ import os
 import sys
 from number_parser import get_number
 from core import *
+from pathlib import Path
 
 
 def check_update(local_version):
@@ -38,8 +39,8 @@ def argparse_function(ver: str) -> [str, str, bool]:
     return args.file, args.config, args.number, args.autoexit
 
 
-def movie_lists(root, escape_folder):
-    print('root is ', root)
+def movie_lists(work_folder, escape_folder,failed_folder):
+    print('workfolder is ', work_folder)
 
     file_type = ['.mp4', '.avi', '.rmvb', '.wmv', '.mov', '.mkv', '.flv', '.ts', '.webm',
                  '.MP4', '.AVI', '.RMVB', '.WMV', '.MOV', '.MKV', '.FLV', '.TS', '.WEBM', '.iso', '.ISO']
@@ -47,7 +48,7 @@ def movie_lists(root, escape_folder):
     total = []
 
     # debug os.walk 在多目录环境下更适用
-    for r, dirs, files in os.walk(root):
+    for r, dirs, files in os.walk(work_folder):
 
         def break_for():
             for e in escape_folder:
@@ -65,6 +66,22 @@ def movie_lists(root, escape_folder):
                 else:
                     pass
     print('total files are: \n', total)
+
+    #dev todo 过滤total   大小
+   
+    def filt(f):
+        p = Path(f)
+        if p.stat().st_size < 1000000000:   #1g
+            moveFailedFolder(f,failed_folder,work_folder)
+            print('file<1g , move '+ f +' to '+ failed_folder)
+            return ''
+        else:
+            return f
+    total = [filt(f) for f in total]
+        
+    
+    print('total files are: \n', total)
+
     return total
 
 
@@ -195,7 +212,7 @@ def main(work_folder):
     # ========== Single File ==========
 
     movie_list = movie_lists(
-        work_folder, re.split("[,，]", conf.escape_folder()))
+        work_folder, re.split("[,，]", conf.escape_folder()),conf.failed_folder())
 
     count = 0
     count_all = str(len(movie_list))
@@ -217,7 +234,7 @@ def main(work_folder):
 
 
 if __name__ == '__main__':  # 外包循环 main（）
-    main('E:/a')
+    main('C:/Users/fm117/Downloads/bt')
     print('main')
     input("Press enter key exit, you can check the error message before you exit...")
     sys.exit(0)

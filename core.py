@@ -31,9 +31,9 @@ def escape_path(path, escape_literals: str):  # Remove escape literals
     return path
 
 
-def moveFailedFolder(filepath, failed_folder):
+def moveFailedFolder(filepath, failed_folder,work_folder):
     print('[-]Move to Failed output folder')
-    shutil.move(filepath, str(work_folder) + '/' + failed_folder + '/')
+    shutil.move(filepath, str(work_folder) + '/' + failed_folder + '/'+os.path.split(filepath)[1]) #shutil.move(文件地址，新文件地址) 这种情况会覆盖
     return
 
 
